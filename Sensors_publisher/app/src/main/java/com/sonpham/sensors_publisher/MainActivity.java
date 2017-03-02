@@ -4,8 +4,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -24,33 +25,44 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
+    // sensors
     private SensorManager mSensorManager;
     private Sensor mPressure;
     private Sensor mTemperature;
     private Sensor mLight;
     private int SENSOR_DELAY = SensorManager.SENSOR_DELAY_NORMAL; // in miliseconds, SENSOR_DELAY_GAME = 200,000 ms
 
+    // listview
     private ListView list;
-    private List<String> stringList;
-    private ArrayAdapter<String> stringAdapter;
+    private List<Float> stringList;
+    private ArrayAdapter<Float> stringAdapter;
 
+    // switches
     private Switch sw_pressure;
     private Switch sw_light;
     private Switch sw_temperature;
 
-    private BlockingDeque<String> queue = new LinkedBlockingDeque<String>();
+    // amqp broker
+    private BlockingDeque<Message> queue = new LinkedBlockingDeque<Message>();
     ConnectionFactory factory = new ConnectionFactory();
     Thread publishThread;
-
+    Handler handler;
+    int interval = 500; // ms
     boolean flag = true;
+
+    // Socket
+    Client client;
+    String host = "192.168.100.7";
+    int port = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+
         addControls();
         setupConnectionFactory();
+        client = new Client(host, port);
 
         publishThread = new Publisher(queue, factory);
         publishThread.start();
@@ -59,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void addControls() {
         mSensorManager = (SensorManager) getSystemService(this.SENSOR_SERVICE);
         addSensors();
+
+        handler = new Handler();
 
         sw_pressure = (Switch) findViewById(R.id.sw_pressure);
         sw_light = (Switch) findViewById(R.id.sw_light);
@@ -87,26 +101,48 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public final void onSensorChanged(SensorEvent event) {
-        Sensor eventSensor = event.sensor;
+        if (flag) {
+            Sensor eventSensor = event.sensor;
+            String message;
 
-        if (sw_pressure.isChecked() && eventSensor.getType() == Sensor.TYPE_PRESSURE) {
-            float millibars_of_pressure = event.values[0];
-            Log.d("PRESSURE_SENSOR:", "millibars_of_pressure: " + millibars_of_pressure);
-            stringAdapter.add("PRESSURE: " + millibars_of_pressure);
-            publishMessage("PRESSURE: " + millibars_of_pressure);
+            if (sw_pressure.isChecked() && eventSensor.getType() == Sensor.TYPE_PRESSURE) {
+                float millibars_of_pressure = event.values[0];
+                message = "" + millibars_of_pressure;
+                Log.d("PRESSURE_SENSOR:", "millibars_of_pressure" + message);
+                stringAdapter.add(Float.valueOf(stringToFloat(message)));
+                sendMessage("pressure", message);
+            }
+            if (sw_light.isChecked() && eventSensor.getType() == Sensor.TYPE_LIGHT) {
+                float lux = event.values[0];
+                message = "" + lux;
+                Log.d("LIGHT_SENSOR", "lux: " + message);
+                stringAdapter.add(Float.valueOf(stringToFloat(message)));
+                sendMessage("light", message);
+            }
+            if (sw_temperature.isChecked() && eventSensor.getType() == Sensor.TYPE_TEMPERATURE) {
+                float degree_of_Celsius = event.values[0];
+                message = "" + degree_of_Celsius;
+                Log.d("TEMPERATURE_SENSOR", "degree_of_celsius: " + message);
+                stringAdapter.add(Float.valueOf(stringToFloat(message)));
+                sendMessage("temperature", message);
+            }
+            flag = false;
         }
-        if (sw_light.isChecked() && eventSensor.getType() == Sensor.TYPE_LIGHT) {
-            float lux = event.values[0];
-            Log.d("LIGHT_SENSOR", "lux: " + lux);
-            stringAdapter.add("LIGHT: " + lux);
-            publishMessage("LIGHT: " + lux);
+    }
+
+    private void sendMessage(String sensorType, String message) {
+        if (!client.isConnected()) {
+            publishMessage(new Message(sensorType, message));
+        } else {
+            client.sendMessage(message);
         }
-        if (sw_temperature.isChecked() && eventSensor.getType() == Sensor.TYPE_TEMPERATURE) {
-            float degree_of_Celsius = event.values[0];
-            Log.d("TEMPERATURE_SENSOR", "degree_of_Celcius" + degree_of_Celsius);
-            stringAdapter.add("TEMPERATURE: " + degree_of_Celsius);
-            publishMessage("TEMPERATURE: " + degree_of_Celsius);
-        }
+    }
+
+    private float stringToFloat(String s) {
+//        char delim = ' ';
+//        int delimIdx = s.indexOf(delim);
+//        String newString = s.substring(delimIdx, s.length());
+        return Float.parseFloat(s);
     }
 
     @Override
@@ -116,6 +152,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mSensorManager.registerListener(this, mPressure, SENSOR_DELAY);
         mSensorManager.registerListener(this, mLight, SENSOR_DELAY);
         mSensorManager.registerListener(this, mTemperature, SENSOR_DELAY);
+
+        handler.post(processSensors);
     }
 
     @Override
@@ -123,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Be sure to unregister the sensor when the activity pauses.
         super.onPause();
         mSensorManager.unregisterListener(this);
+        handler.removeCallbacks(processSensors);
     }
 
     @Override
@@ -131,11 +170,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         publishThread.interrupt();
     }
 
-    void publishMessage(String message) {
-        //Adds a message to internal blocking queue
+    void publishMessage(Message msg) {
+        //Adds a value to internal blocking queue
         try {
-            Log.d("","[q] " + message);
-            queue.putLast(message);
+            Log.d("", "[q] " + msg);
+            queue.putLast(msg);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -150,4 +189,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             e1.printStackTrace();
         }
     }
+
+    private final Runnable processSensors = new Runnable() {
+        @Override
+        public void run() {
+            flag = true;
+            // The Runnable is posted to run again here
+            handler.postDelayed(this, interval);
+        }
+    };
 }

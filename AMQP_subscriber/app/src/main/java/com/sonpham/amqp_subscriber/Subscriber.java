@@ -25,8 +25,6 @@ public class Subscriber extends Thread {
     public Subscriber(Handler handler, ConnectionFactory factory) {
         this.handler = handler;
         this.factory = factory;
-        publisherName = "AnhAnh";
-        sensorType = "pressure";
     }
 
     @Override
