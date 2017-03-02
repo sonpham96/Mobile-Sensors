@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Sensor mPressure;
     private Sensor mTemperature;
     private Sensor mLight;
-    private int SENSOR_DELAY = SensorManager.SENSOR_DELAY_NORMAL; // in miliseconds, SENSOR_DELAY_GAME = 200,000 ms
+    private int SENSOR_DELAY = SensorManager.SENSOR_DELAY_FASTEST; // in miliseconds, SENSOR_DELAY_GAME = 200,000 ms
 
     // listview
     private ListView list;
@@ -47,8 +47,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     ConnectionFactory factory = new ConnectionFactory();
     Thread publishThread;
     Handler handler;
-    int interval = 500; // ms
-    boolean flag = true;
+    int interval = 1500; // ms
+    boolean[] flag = { true, false, false};
+    int turn = 0;
 
     // Socket
     Client client;
@@ -101,32 +102,32 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public final void onSensorChanged(SensorEvent event) {
-        if (flag) {
-            Sensor eventSensor = event.sensor;
-            String message;
+        Sensor eventSensor = event.sensor;
+        String message;
 
-            if (sw_pressure.isChecked() && eventSensor.getType() == Sensor.TYPE_PRESSURE) {
-                float millibars_of_pressure = event.values[0];
-                message = "" + millibars_of_pressure;
-                Log.d("PRESSURE_SENSOR:", "millibars_of_pressure" + message);
-                stringAdapter.add(Float.valueOf(stringToFloat(message)));
-                sendMessage("pressure", message);
-            }
-            if (sw_light.isChecked() && eventSensor.getType() == Sensor.TYPE_LIGHT) {
-                float lux = event.values[0];
-                message = "" + lux;
-                Log.d("LIGHT_SENSOR", "lux: " + message);
-                stringAdapter.add(Float.valueOf(stringToFloat(message)));
-                sendMessage("light", message);
-            }
-            if (sw_temperature.isChecked() && eventSensor.getType() == Sensor.TYPE_TEMPERATURE) {
-                float degree_of_Celsius = event.values[0];
-                message = "" + degree_of_Celsius;
-                Log.d("TEMPERATURE_SENSOR", "degree_of_celsius: " + message);
-                stringAdapter.add(Float.valueOf(stringToFloat(message)));
-                sendMessage("temperature", message);
-            }
-            flag = false;
+        if (sw_pressure.isChecked() && eventSensor.getType() == Sensor.TYPE_PRESSURE && flag[0] && turn == 0) {
+            float millibars_of_pressure = event.values[0];
+            message = "" + millibars_of_pressure;
+            Log.d("PRESSURE_SENSOR:", "millibars_of_pressure" + message);
+            stringAdapter.add(Float.valueOf(stringToFloat(message)));
+            sendMessage("pressure", message);
+            flag[0] = false;
+        }
+        if (sw_light.isChecked() && eventSensor.getType() == Sensor.TYPE_LIGHT && flag[1] && turn == 1) {
+            float lux = event.values[0];
+            message = "" + lux;
+            Log.d("LIGHT_SENSOR", "lux: " + message);
+            stringAdapter.add(Float.valueOf(stringToFloat(message)));
+            sendMessage("light", message);
+            flag[1] = false;
+        }
+        if (sw_temperature.isChecked() && eventSensor.getType() == Sensor.TYPE_TEMPERATURE && flag[2] && turn == 2) {
+            float degree_of_Celsius = event.values[0];
+            message = "" + degree_of_Celsius;
+            Log.d("TEMPERATURE_SENSOR", "degree_of_celsius: " + message);
+            stringAdapter.add(Float.valueOf(stringToFloat(message)));
+            sendMessage("temperature", message);
+            flag[2] = false;
         }
     }
 
@@ -193,7 +194,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private final Runnable processSensors = new Runnable() {
         @Override
         public void run() {
-            flag = true;
+            flag[turn] = true;
+            turn = (turn + 1) % 3;
             // The Runnable is posted to run again here
             handler.postDelayed(this, interval);
         }
