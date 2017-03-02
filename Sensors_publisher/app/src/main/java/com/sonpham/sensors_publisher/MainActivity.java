@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private float stringToFloat(String s) {
 //        char delim = ' ';
 //        int delimIdx = s.indexOf(delim);
-//        String newString = s.substring(delimIdx, s.length());
+//        String newString = s.substring(delimIdx + 1, s.length());
         return Float.parseFloat(s);
     }
 
