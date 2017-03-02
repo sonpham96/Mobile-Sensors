@@ -18,10 +18,15 @@ import com.rabbitmq.client.QueueingConsumer;
 public class Subscriber extends Thread {
     private Handler handler;
     private ConnectionFactory factory;
+    private static final String EXCHANGE_NAME = "amq.topic";
+    public String publisherName = "AnhAnh";
+    public String sensorType = "pressure";
 
     public Subscriber(Handler handler, ConnectionFactory factory) {
         this.handler = handler;
         this.factory = factory;
+        publisherName = "AnhAnh";
+        sensorType = "pressure";
     }
 
     @Override
@@ -32,7 +37,7 @@ public class Subscriber extends Thread {
                 Channel channel = connection.createChannel();
                 channel.basicQos(1);
                 AMQP.Queue.DeclareOk q = channel.queueDeclare();
-                channel.queueBind(q.getQueue(), "amq.fanout", "chat");
+                channel.queueBind(q.getQueue(), EXCHANGE_NAME, publisherName + '.' + sensorType);
                 QueueingConsumer consumer = new QueueingConsumer(channel);
                 channel.basicConsume(q.getQueue(), true, consumer);
 
