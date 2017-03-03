@@ -1,5 +1,8 @@
 package com.sonpham.amqp_subscriber;
 
+import android.app.LauncherActivity;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -10,6 +13,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GridLabelRenderer;
+import com.jjoe64.graphview.Viewport;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 import com.rabbitmq.client.ConnectionFactory;
 
 import java.net.URISyntaxException;
@@ -20,10 +28,12 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
+    String mPublisherName;
+    String mSensorType;
+    GraphView mGraphView;
+    private LineGraphSeries<DataPoint> mSeries;
+    private double lastXvalue = 0d;
 
-    EditText et_publisherName;
-    EditText et_sensorType;
-    Button button;
     ListView listView;
     ArrayAdapter<String> adapter;
 
@@ -36,6 +46,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Intent i = getIntent();
+        mPublisherName = i.getStringExtra(LaunchActivity.EXTRA_PUBLISHER_NAME);
+        mSensorType = i.getStringExtra(LaunchActivity.EXTRA_SENSOR_TYPE);
+
         addControls();
         setupConnectionFactory();
 
@@ -43,12 +57,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void handleMessage(Message msg) {
                 String message = msg.getData().getString("msg");
+                final double d = Double.parseDouble(message);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSeries.appendData(new DataPoint(lastXvalue++,d),true, 100);
+                    }
+                });
+
                 Date now = new Date();
                 SimpleDateFormat ft = new SimpleDateFormat("hh:mm:ss");
-                adapter.add(ft.format(now) + ' ' + message + '\n');
+                adapter.add(ft.format(now) + ' '+ mSensorType + ' ' + message + '\n');
             }
         };
-        subscribeThread = new Subscriber(incomingMessageHandler, factory);
+        subscribeThread = new Subscriber(incomingMessageHandler, factory, mPublisherName, mSensorType);
         subscribeThread.start();
     }
 
@@ -59,24 +82,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addControls() {
-        et_publisherName = (EditText) findViewById(R.id.et_publisherName);
-        et_sensorType = (EditText) findViewById(R.id.et_sensorType);
-        button = (Button) findViewById(R.id.button);
+        mGraphView = (GraphView) findViewById(R.id.graph);
+        mSeries = new LineGraphSeries<DataPoint>();
+        mGraphView.addSeries(mSeries);
+        mGraphView.setTitle(mPublisherName +"\'s "+ mSensorType +" data");
+
+        Viewport v = mGraphView.getViewport();
+       // v.setBackgroundColor(R.color.backgroundDark);
+        v.setBackgroundColor(Color.rgb(214, 221, 232));
+        v.setScrollable(true);
+        v.setXAxisBoundsManual(true);
+        v.setMinX(0);
+        v.setMaxX(100);
+
+        GridLabelRenderer grid = mGraphView.getGridLabelRenderer();
+        grid.setGridColor(android.R.color.white);
+
+
 
         listView = (ListView) findViewById(R.id.listView);
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new ArrayList<String>());
         listView.setAdapter(adapter);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                subscribeThread.interrupt();
-                subscribeThread = new Subscriber(incomingMessageHandler, factory);
-                subscribeThread.publisherName = et_publisherName.getText().toString();
-                subscribeThread.sensorType = et_sensorType.getText().toString();
-                subscribeThread.start();
-            }
-        });
     }
 
     private void setupConnectionFactory() {
