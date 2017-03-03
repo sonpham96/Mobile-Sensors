@@ -11,7 +11,6 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import com.rabbitmq.client.ConnectionFactory;
 
@@ -48,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     Thread publishThread;
     Handler handler;
     int interval = 1500; // ms
-    boolean[] flag = { true, false, false};
+    boolean[] flag = {true, false, false};
     int turn = 0;
 
     // Socket

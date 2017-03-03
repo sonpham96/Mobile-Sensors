@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Android Template</string>
+    <string name="settings">Settings</string>
+    <string name="lorem_ipsum">Sugar plum sugar plum gummies donut jelly powder. Icing muffin cheesecake liquorice wafer bonbon. Bonbon tootsie roll halvah. Lollipop macaroon bear claw chocolate cake. Chocolate bar gummi bears candy cheesecake icing oat cake. Cake chocolate cake liquorice pie. Donut halvah lollipop. Bear claw lollipop sweet roll cookie dragée dragée donut candy. Cheesecake liquorice marzipan dragée muffin chocolate dessert jujubes. Cupcake ice cream tootsie roll bonbon croissant gingerbread ice cream danish. Jelly beans donut jujubes sugar plum. Tootsie roll tiramisu chupa chups dragée cheesecake brownie chocolate bar chocolate bar icing. Apple pie cake carrot cake gingerbread candy canes</string>
+    <string name="article_detail_more_info">More Info</string>
+
+
+    <string name="server_title">Server Info</string>
+    <string name="server_subhead">Host and Port information</string>
+    <string name="server_hint_host_info">Server host</string>
+    <string name="server_hint_port_info">Server port</string>
+
+
+    <string name="navigation_title">My navigation title</string>
+    <string name="navigation_main">Main</string>
+    <string name="navigation_server_info">Server Info</string>
+    <string name="navigation_settings">Settings</string>
+    <string name="navigation_sub_items">Sub items</string>
+    <string name="navigation_dummy_item_1">Dummy item 1</string>
+    <string name="navigation_dummy_item_2">Dummy item 2</string>
+    <string name="broker_publisher_name">Publisher Name</string>
+    <string name="broker_publisher_name_sub">Broker Pulisher name information</string>
+    <string name="broker_publisher_name_hint">Name of your broker publisher</string>
+</resources>

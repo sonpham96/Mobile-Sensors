@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pref_settings_1_key">pref_settings_1</string>
+    <string name="pref_settings_1_title">Pressure</string>
+    <string name="pref_settings_1_description">Get Pressure Data</string>
+
+    <string name="pref_settings_2_key">pref_settings_2</string>
+    <string name="pref_settings_2_title">Light</string>
+    <string name="pref_settings_2_description">Get Light Data</string>
+
+    <string name="pref_settings_3_key">pref_settings_3</string>
+    <string name="pref_settings_3_title">Temperature</string>
+    <string name="pref_settings_3_description">Get Temperature Data</string>
+</resources>
