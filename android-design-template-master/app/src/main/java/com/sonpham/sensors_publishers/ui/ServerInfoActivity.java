@@ -13,7 +13,6 @@ import android.widget.EditText;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.sonpham.sensors_publishers.R;
-import com.sonpham.sensors_publishers.ui.base.BaseActivity;
 
 /**
  * Activity demonstrates some GUI functionalities from the Android support library.
@@ -58,7 +57,7 @@ public class ServerInfoActivity extends BaseActivity {
 
     private void setupToolbar() {
         final ActionBar ab = getActionBarToolbar();
-        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+        ab.setHomeAsUpIndicator(R.drawable.ic_menu_24dp);
         ab.setDisplayHomeAsUpEnabled(true);
     }
 

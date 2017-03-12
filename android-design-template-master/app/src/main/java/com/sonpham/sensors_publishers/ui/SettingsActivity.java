@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.sonpham.sensors_publishers.R;
-import com.sonpham.sensors_publishers.ui.base.BaseActivity;
 import com.sonpham.sensors_publishers.util.LogUtil;
 
 /**
@@ -30,7 +29,7 @@ public class SettingsActivity extends BaseActivity {
 
     private void setupToolbar() {
         final ActionBar ab = getActionBarToolbar();
-        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+        ab.setHomeAsUpIndicator(R.drawable.ic_menu_24dp);
         ab.setDisplayHomeAsUpEnabled(true);
     }
 

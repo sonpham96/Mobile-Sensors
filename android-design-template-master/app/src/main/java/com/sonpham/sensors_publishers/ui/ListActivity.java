@@ -14,18 +14,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rabbitmq.client.ConnectionFactory;
 import com.sonpham.sensors_publishers.R;
-import com.sonpham.sensors_publishers.ui.base.BaseActivity;
 
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -40,8 +37,7 @@ public class ListActivity extends BaseActivity implements SensorEventListener {
 
     // listview
     private ListView list;
-    private List<Float> stringList;
-    private ArrayAdapter<Float> stringAdapter;
+    private ArrayAdapter<String> adapter;
 
     // switches
     private boolean sw_pressure;
@@ -59,7 +55,7 @@ public class ListActivity extends BaseActivity implements SensorEventListener {
 
     // Socket
     Client client;
-    String host = "172.28.2.118";
+    String host = "192.168.100.7";
     int port = 2000;
     public static final String DEFAULT_HOST = "";
     public static final int DEFAULT_PORT = 2000;
@@ -71,25 +67,19 @@ public class ListActivity extends BaseActivity implements SensorEventListener {
 
     SharedPreferences sharedpreferences;
 
-
-//    private TextView tv;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
-        setupToolbar();
-
         addControls();
+        setupToolbar();
         setupConnectionFactory();
 
         sharedpreferences = getSharedPreferences("server_info", this.MODE_PRIVATE);
-
         host = sharedpreferences.getString("host_info", DEFAULT_HOST);
         port = sharedpreferences.getInt("port_info", DEFAULT_PORT);
         publisher_name = sharedpreferences.getString("pname", DEFAULT_PUBLISHER_NAME);
-
         Toast.makeText(this, host + ":" + port + "\n" + publisher_name, Toast.LENGTH_SHORT).show();
 
         client = new Client(host, port);
@@ -103,16 +93,14 @@ public class ListActivity extends BaseActivity implements SensorEventListener {
 
         handler = new Handler();
 
-        stringList = new ArrayList<>();
-        stringAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, stringList);
-
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList<String>());
         list = (ListView) findViewById(R.id.list);
-        list.setAdapter(stringAdapter);
+        list.setAdapter(adapter);
     }
 
     private void setupToolbar() {
         final ActionBar ab = getActionBarToolbar();
-        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+        ab.setHomeAsUpIndicator(R.drawable.ic_menu_24dp);
         ab.setDisplayHomeAsUpEnabled(true);
     }
 
@@ -219,7 +207,7 @@ public class ListActivity extends BaseActivity implements SensorEventListener {
             float millibars_of_pressure = event.values[0];
             message = "" + millibars_of_pressure;
             Log.d("PRESSURE_SENSOR:", "millibars_of_pressure" + message);
-            stringAdapter.add(Float.valueOf(stringToFloat(message)));
+            adapter.add(message);
             sendMessage("pressure", message);
             flag[0] = false;
         }
@@ -227,7 +215,7 @@ public class ListActivity extends BaseActivity implements SensorEventListener {
             float lux = event.values[0];
             message = "" + lux;
             Log.d("LIGHT_SENSOR", "lux: " + message);
-            stringAdapter.add(Float.valueOf(stringToFloat(message)));
+            adapter.add(message);
             sendMessage("light", message);
             flag[1] = false;
         }
@@ -235,7 +223,7 @@ public class ListActivity extends BaseActivity implements SensorEventListener {
             float degree_of_Celsius = event.values[0];
             message = "" + degree_of_Celsius;
             Log.d("TEMPERATURE_SENSOR", "degree_of_celsius: " + message);
-            stringAdapter.add(Float.valueOf(stringToFloat(message)));
+            adapter.add(message);
             sendMessage("temperature", message);
             flag[2] = false;
         }
@@ -245,7 +233,7 @@ public class ListActivity extends BaseActivity implements SensorEventListener {
         if (!client.isConnected()) {
             publishMessage(new Message(sensorType, message));
         } else {
-            client.sendMessage(message);
+            client.sendMessage(sensorType + '.'  + message);
         }
     }
 
@@ -257,13 +245,6 @@ public class ListActivity extends BaseActivity implements SensorEventListener {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    private float stringToFloat(String s) {
-//        char delim = ' ';
-//        int delimIdx = s.indexOf(delim);
-//        String newString = s.substring(delimIdx + 1, s.length());
-        return Float.parseFloat(s);
     }
 
     @Override

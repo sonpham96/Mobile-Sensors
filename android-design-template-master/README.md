@@ -88,11 +88,11 @@ The navigation drawer is configured in *menu/drawer_view.xml*:
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_quotes"
-            android:icon="@drawable/ic_discuss"
+            android:icon="@com.sonpham.sensors_publishers.ui.drawable/ic_discuss"
             android:title="@string/navigation_quotes" />
         <item
             android:id="@+id/nav_samples"
-            android:icon="@drawable/ic_forum"
+            android:icon="@com.sonpham.sensors_publishers.ui.drawable/ic_forum"
             android:title="@string/navigation_samples" />
             ... 
 ```

@@ -1,4 +1,4 @@
-package com.sonpham.sensors_publishers.ui.base;
+package com.sonpham.sensors_publishers.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,9 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.sonpham.sensors_publishers.R;
-import com.sonpham.sensors_publishers.ui.ServerInfoActivity;
-import com.sonpham.sensors_publishers.ui.SettingsActivity;
-import com.sonpham.sensors_publishers.ui.ListActivity;
 
 import static com.sonpham.sensors_publishers.util.LogUtil.logD;
 import static com.sonpham.sensors_publishers.util.LogUtil.makeLogTag;

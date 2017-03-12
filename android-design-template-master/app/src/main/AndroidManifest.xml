@@ -19,10 +19,6 @@
         </activity>
 
         <activity
-            android:name="com.sonpham.sensors_publishers.ui.quote.ArticleDetailActivity"
-            android:label=""
-            android:parentActivityName="com.sonpham.sensors_publishers.ui.ListActivity" />
-        <activity
             android:name="com.sonpham.sensors_publishers.ui.ServerInfoActivity"
             android:label="Server"
             android:parentActivityName="com.sonpham.sensors_publishers.ui.ListActivity" />
