@@ -1,15 +1,15 @@
 package com.sonpham.amqp_subscriber;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
 public class LaunchActivity extends AppCompatActivity {
-    public static final String EXTRA_PUBLISHER_NAME  = "com.example.anh.livegraph.publisher_name";
-    public static final String EXTRA_SENSOR_TYPE  = "com.example.anh.livegraph.sensor_type";
+    public static final String EXTRA_PUBLISHER_NAME = "com.example.anh.livegraph.publisher_name";
+    public static final String EXTRA_SENSOR_TYPE = "com.example.anh.livegraph.sensor_type";
     EditText et_publisherName;
     FloatingActionButton light_button;
     FloatingActionButton temp_button;
@@ -29,25 +29,20 @@ public class LaunchActivity extends AppCompatActivity {
         light_button.setOnClickListener(generateListner("light"));
         temp_button.setOnClickListener(generateListner("temperature"));
         pressure_button.setOnClickListener(generateListner("pressure"));
-
-
     }
 
-    public View.OnClickListener generateListner(String sensorType){
+    public View.OnClickListener generateListner(String sensorType) {
         final String type = sensorType;
 
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(LaunchActivity.this, MainActivity.class);
-                i.putExtra(EXTRA_PUBLISHER_NAME,et_publisherName.getText().toString());
-                i.putExtra(EXTRA_SENSOR_TYPE,type);
+                i.putExtra(EXTRA_PUBLISHER_NAME, et_publisherName.getText().toString());
+                i.putExtra(EXTRA_SENSOR_TYPE, type);
 
                 startActivity(i);
-
             }
         };
-
-
     }
 }

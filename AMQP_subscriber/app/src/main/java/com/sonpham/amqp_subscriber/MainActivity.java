@@ -1,16 +1,12 @@
 package com.sonpham.amqp_subscriber;
 
-import android.app.LauncherActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import com.jjoe64.graphview.GraphView;
@@ -62,13 +58,13 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mSeries.appendData(new DataPoint(lastXvalue++,d),true, 100);
+                        mSeries.appendData(new DataPoint(lastXvalue++, d), true, 100);
                     }
                 });
 
                 Date now = new Date();
                 SimpleDateFormat ft = new SimpleDateFormat("hh:mm:ss");
-                adapter.add(ft.format(now) + ' '+ mSensorType + ' ' + message + '\n');
+                adapter.add(ft.format(now) + ' ' + mSensorType + ' ' + message + '\n');
             }
         };
         subscribeThread = new Subscriber(incomingMessageHandler, factory, mPublisherName, mSensorType);
@@ -85,10 +81,10 @@ public class MainActivity extends AppCompatActivity {
         mGraphView = (GraphView) findViewById(R.id.graph);
         mSeries = new LineGraphSeries<DataPoint>();
         mGraphView.addSeries(mSeries);
-        mGraphView.setTitle(mPublisherName +"\'s "+ mSensorType +" data");
+        mGraphView.setTitle(mPublisherName + "\'s " + mSensorType + " data");
 
         Viewport v = mGraphView.getViewport();
-       // v.setBackgroundColor(R.color.backgroundDark);
+        // v.setBackgroundColor(R.color.backgroundDark);
         v.setBackgroundColor(Color.rgb(214, 221, 232));
         v.setScrollable(true);
         v.setXAxisBoundsManual(true);
@@ -97,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
 
         GridLabelRenderer grid = mGraphView.getGridLabelRenderer();
         grid.setGridColor(android.R.color.white);
-
 
 
         listView = (ListView) findViewById(R.id.listView);
