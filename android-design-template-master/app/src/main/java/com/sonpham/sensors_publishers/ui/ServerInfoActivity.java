@@ -10,13 +10,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.sonpham.sensors_publishers.R;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import com.sonpham.sensors_publishers.R;
 
 /**
  * Activity demonstrates some GUI functionalities from the Android support library.
- *
+ * <p>
  * Created by Andreas Schrade on 14.12.2015.
  */
 public class ServerInfoActivity extends BaseActivity {
@@ -98,6 +99,7 @@ public class ServerInfoActivity extends BaseActivity {
 
     /**
      * Handles the navigation item click and starts the corresponding activity.
+     *
      * @param item the selected navigation item
      */
     @Override

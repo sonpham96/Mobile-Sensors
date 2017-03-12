@@ -233,7 +233,7 @@ public class ListActivity extends BaseActivity implements SensorEventListener {
         if (!client.isConnected()) {
             publishMessage(new Message(sensorType, message));
         } else {
-            client.sendMessage(sensorType + '.'  + message);
+            client.sendMessage(sensorType + '.' + message);
         }
     }
 

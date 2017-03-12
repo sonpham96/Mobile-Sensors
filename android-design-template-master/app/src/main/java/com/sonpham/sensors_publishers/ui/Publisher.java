@@ -40,7 +40,7 @@ public class Publisher extends Thread {
                 while (true) {
                     Message message = queue.takeFirst();
                     try {
-                        ch.basicPublish(EXCHANGE_NAME, publisherName + '.' + message.sensorType, null,message.value.getBytes());
+                        ch.basicPublish(EXCHANGE_NAME, publisherName + '.' + message.sensorType, null, message.value.getBytes());
                         Log.d("", "[s] " + message.value);
                         ch.waitForConfirmsOrDie();
                     } catch (Exception e) {
