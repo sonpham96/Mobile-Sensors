@@ -19,8 +19,8 @@ public class Subscriber extends Thread {
     private Handler handler;
     private ConnectionFactory factory;
     private static final String EXCHANGE_NAME = "amq.topic";
-    public String publisherName ;
-    public String sensorType ;
+    public String publisherName;
+    public String sensorType;
 
     public Subscriber(Handler handler, ConnectionFactory factory, String publisherName, String sensorType) {
         this.handler = handler;

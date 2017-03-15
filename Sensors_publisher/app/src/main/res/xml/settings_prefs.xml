@@ -2,21 +2,27 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreference
+        android:defaultValue="false"
         android:key="@string/pref_settings_1_key"
-        android:title="@string/pref_settings_1_title"
         android:summary="@string/pref_settings_1_description"
-        android:defaultValue="false" />
+        android:title="@string/pref_settings_1_title" />
 
     <SwitchPreference
+        android:defaultValue="false"
         android:key="@string/pref_settings_2_key"
-        android:title="@string/pref_settings_2_title"
         android:summary="@string/pref_settings_2_description"
-        android:defaultValue="false" />
+        android:title="@string/pref_settings_2_title" />
 
     <SwitchPreference
+        android:defaultValue="false"
         android:key="@string/pref_settings_3_key"
-        android:title="@string/pref_settings_3_title"
         android:summary="@string/pref_settings_3_description"
-        android:defaultValue="false" />
+        android:title="@string/pref_settings_3_title" />
+
+    <EditTextPreference
+        android:defaultValue="@string/publisher_name_default"
+        android:key="pref_pname"
+        android:summary="@string/publisher_name_summary"
+        android:title="@string/publisher_name" />
 
 </PreferenceScreen>

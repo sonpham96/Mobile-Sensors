@@ -23,7 +23,6 @@
             android:layout_height="match_parent"
             android:stackFromBottom="true"
             android:transcriptMode="alwaysScroll" />
-        <!--<include layout="@layout/include_list_view" />-->
     </LinearLayout>
     <include layout="@layout/include_navigation" />
 

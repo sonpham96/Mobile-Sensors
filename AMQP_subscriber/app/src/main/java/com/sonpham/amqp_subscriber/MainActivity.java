@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Date now = new Date();
                 SimpleDateFormat ft = new SimpleDateFormat("hh:mm:ss");
-                adapter.add(ft.format(now) + ' ' + mSensorType + ' ' + message + '\n');
+                adapter.add(ft.format(now) + " | " + mSensorType + ": " + message);
             }
         };
         subscribeThread = new Subscriber(incomingMessageHandler, factory, mPublisherName, mSensorType);

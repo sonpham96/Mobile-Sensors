@@ -13,7 +13,6 @@
         android:padding="@dimen/regular_offset">
 
         <TextView
-            android:layout_marginTop="20dp"
             android:id="@+id/sample_title"
             style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="match_parent"
@@ -53,34 +52,6 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/server_hint_port_info"
                 android:inputType="number" />
-
-        </android.support.design.widget.TextInputLayout>
-
-        <TextView
-            android:layout_marginTop="20dp"
-            android:id="@+id/broker_publisher_name"
-            style="@style/TextAppearance.AppCompat.Title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/broker_publisher_name" />
-
-        <TextView
-            android:id="@+id/broker_publisher_name_sub"
-            style="@style/TextAppearance.AppCompat.Subhead"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="@string/broker_publisher_name_sub" />
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/publisher_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/broker_publisher_name_hint" />
 
         </android.support.design.widget.TextInputLayout>
 
