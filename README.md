@@ -2,7 +2,7 @@ Mobile-Sensors
 ==============
 Computer Networks | CC14KHMT | 2017/02/27 - 2017/03/03 | Bach Khoa University (BKU)
 
-The concept
+The Concept
 -----------
 
 A lot of applications across different disciplines involved the usage of sensors. We want to provide an economical way to retrieve data from environment using sensors on smartphones.
