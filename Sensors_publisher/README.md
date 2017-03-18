@@ -22,7 +22,7 @@ The app supports every device with a SDK level of at least 14 (Android 4.0+).
 ## Brief Implementation
 
 ### Gradle
-[/Sensors_publisher/app/build.gradle](/app/build.gradle)
+[/app/build.gradle](/Sensors_publisher/app/build.gradle)
 
 ```xml
     compile "com.android.support:appcompat-v7:${android_support_lib_version}"
@@ -34,7 +34,7 @@ The app supports every device with a SDK level of at least 14 (Android 4.0+).
 ```
 
 ### Manifest
-[/Sensors_publisher/app/src/main/AndroidManifest.xml](/app/src/main/AndroidManifest.xml)
+[/app/src/main/AndroidManifest.xml](/Sensors_publisher/app/src/main/AndroidManifest.xml)
 
 ```xml
 > <uses-permission android:name="android.permission.INTERNET" />
@@ -44,7 +44,7 @@ To be able to setup TCP connection and AQMP connection, the app need to request 
 
 
 ### Source code
-[/Sensors_publisher/app/src/main/java/com/sonpham/sensors_publishers](/app/src/main/java/com/sonpham/sensors_publishers)
+[/app/src/main/java/com/sonpham/sensors_publishers](/Sensors_publisher/app/src/main/java/com/sonpham/sensors_publishers)
 
 #### [BaseActivity.java](/Sensors_publisher/app/src/main/java/com/sonpham/sensors_publishers/BaseActivity.java), the base class
 *BaseActivity* is the parent class for every *Activity* inside this project. This class creates and provides the navigation drawer and toolbar.

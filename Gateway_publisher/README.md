@@ -19,7 +19,7 @@ Every devices that has the Java Virtual Machine (JVM) installed and a decent Int
 ## Brief Implementation
 
 ### Maven
-[/Gateway_publisher/pom.xml](/pom.xml)
+[/pom.xml](/Gateway_publisher/pom.xml)
 
 ```xml
 <dependencies>
@@ -44,7 +44,7 @@ Every devices that has the Java Virtual Machine (JVM) installed and a decent Int
 ```
 
 ### Source code
-[/Gateway_publisher/src/main/java](/src/main/java)
+[/src/main/java](/Gateway_publisher/src/main/java)
 
 #### [Publisher.java](/Gateway_publisher/src/main/java/AMQP/Publisher.java), the AMQP connection
 
