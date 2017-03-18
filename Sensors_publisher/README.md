@@ -1,157 +1,293 @@
-# Material Design Android Template
-
-First of all, a few screenshots:
-
-Smartphone          |  Tablet
-:-------------------------:|:-------------------------:
-![Smartphones](http://www.andreas-schrade.de/assets/external/screen-nexus5.jpg)  |  ![Tablet](http://www.andreas-schrade.de/assets/external/screen-tablet.jpg)
-
-Collapsing Toolbar          |  Navigation Drawer
-:-------------------------:|:-------------------------: 
-![Smartphones](http://www.andreas-schrade.de/assets/external/animation1.gif)  |  ![Smartphones](http://www.andreas-schrade.de/assets/external/screen-nexus5-2.jpg) 
-
-Support Design Library Views          |  Preferences
-:-------------------------:|:-------------------------: 
-![Smartphones](http://www.andreas-schrade.de/assets/external/animation2.gif)  |  ![Smartphones](http://www.andreas-schrade.de/assets/external/screen-nexus5-3.jpg) 
-
+# Sensors_publisher a.k.a sensorUp
 
 ## What is this?
 
-This is a State of the Art Android Material Design template. You can use this project as a template for upcoming App projects. Just clone the project, change package name and make all necessary customisations. 
+This is a simple Android app that collects the device's sensors data and sends them to a server (TCP) or a broker (AMQP).
 
 
 ## Dependencies
 
-The focus of this project lies on the view layer and app navigation. It uses the following dependencies:
-
-- AppCompat Support Library
-- Support Design Library
-- Support Card View Library
-- Butterknife
-- Glide 
+* AppCompat Support Library
+* Support Design Library
+* Butterknife
+* RabbitMQ Java Client Library
+* SLF4J API
+* SLF4J Simple
 
 ## Supported devices
 
-The template support every device with a SDK level of at least 14 (Android 4+).
+The app supports every device with a SDK level of at least 14 (Android 4.0+).
 
 
-## Quick walkthrough
+## Brief Implementation
 
 ### Gradle
-
-Nothing special here. Please note that the version of the support library is extracted to *gradle.properties*:
+[/app/build.gradle](/app/build.gradle)
 
 ```xml
     compile "com.android.support:appcompat-v7:${android_support_lib_version}"
     compile "com.android.support:design:${android_support_lib_version}"
-    compile "com.android.support:cardview-v7:${android_support_lib_version}"
-
-    compile 'com.github.bumptech.glide:glide:3.6.1'
     compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.rabbitmq:amqp-client:4.1.0'
+    compile 'org.slf4j:slf4j-api:1.7.24'
+    compile 'org.slf4j:slf4j-simple:1.7.24'
 ```
 
 ### Manifest
-
-There are only three Activities declared. The main theme is *@style/Theme.Main*.
-
-### Theme
-
-The project contains three *styles.xml*.
-
-1. res/values/styles.xml  (basic colors, styles)
-2. res/values-v21/styles.xml  (contains Android 5 statusbar/systembar features)
-3. res/values-sw600dp-land/styles.xml (used for tablet layout)
-
-You can easily change the colors of your app. You only have to set the color values in colors.xml
+[/app/src/main/AndroidManifest.xml](/app/src/main/AndroidManifest.xml)
 
 ```xml
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="theme_primary_accent">#8BC34A</color>
-    <color name="theme_primary_dark">#1976D2</color>
-    <color name="theme_primary_light">#2196F3</color>
-    <color name="theme_window_background">#FFF5F5F5</color>
-    <color name="theme_divider">#B6B6B6</color>
-
-    <color name="primary_text">#212121</color>
-    <color name="secondary_text">#727272</color>
-</resources>
+> <uses-permission android:name="android.permission.INTERNET" />
 ```
 
-### Navigation
-
-The navigation drawer is configured in *menu/drawer_view.xml*:
-
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_quotes"
-            android:icon="@com.sonpham.sensors_publishers.ui.drawable/ic_discuss"
-            android:title="@string/navigation_quotes" />
-        <item
-            android:id="@+id/nav_samples"
-            android:icon="@com.sonpham.sensors_publishers.ui.drawable/ic_forum"
-            android:title="@string/navigation_samples" />
-            ... 
-```
+To be able to setup TCP connection and AQMP connection, the app need to request for the permission to access the Internet.
 
 
+### Source code
+[/app/src/main/java/com/sonpham/sensors_publishers](/app/src/main/java/com/sonpham/sensors_publishers)
 
-### Base classes
+#### [BaseActivity.java](/app/src/main/java/com/sonpham/sensors_publishers/BaseActivity.java), the base class
+*BaseActivity* is the parent class for every *Activity* inside this project. This class creates and provides the navigation drawer and toolbar.
 
-*BaseActivity* is the parent class for every *Activity* inside this template. This class creates and provides the navigation drawer and toolbar.
+#### [ListActivity.java](/app/src/main/java/com/sonpham/sensors_publishers/ListActivity.java), the main activity
 
-*BaseFragment* is the parent for every *Fragment* class. It is responsible for view inflating and view binding (via ButterKnife).
-
-### Quotes View
-
-The *ListActivity* is the start *Activity* and supports two differend layout modes:
-
-1. One pane mode: Used on devices with a small screen size. The Activity shows only a list of all available quotes.
-2. Two pane mode: Used on tablets and every device with a high screen size (>= 600dp width). The Activity shows the list of quotes and displays the selected item in a seperate Fragment.
-
-### Settings
-
-The *SettingsActivity* represents some dummy preferences. You can easily configure your settings by modifying the *settings_prefs.xml*.
-
-### View Samples
-
-The *ViewSamplesActivity* shows some stuff from the Support Design Library.
-
-Butterknife is not only used for view binding, furthermore it is also used for configuring click listeners:
+*ListActivity* can be considered as the main activity, the activity that you will mainly work on.
 
 ```java
-    @OnClick(R.id.fab)
-    public void onFabClicked(View view) {
-       // floating action button clicked
+Handler handler;
+int interval = 250; // ms
+boolean[] flag = {false, false, false};
+private final Runnable processSensors = new Runnable() {
+	@Override
+	public void run() {
+		flag[0] = sw_pressure;
+		flag[1] = sw_light;
+		flag[2] = sw_temperature;
+		// The Runnable is posted to run again here
+		handler.postDelayed(this, interval);
+	}
+};
+
+@Override
+public final void onSensorChanged(SensorEvent event) {
+	Sensor eventSensor = event.sensor;
+	String message;
+
+	if (flag[0] && eventSensor.getType() == Sensor.TYPE_PRESSURE) {
+		message = "" + event.values[0];
+		sendMessage("pressure", message);
+		flag[0] = false;
+	}
+	if (flag[1] && eventSensor.getType() == Sensor.TYPE_LIGHT) {
+		message = "" + event.values[0];
+		sendMessage("light", message);
+		flag[1] = false;
+	}
+	if (flag[2] && eventSensor.getType() == Sensor.TYPE_TEMPERATURE) {
+		message = "" + event.values[0];
+		sendMessage("temperature", message);
+		flag[2] = false;
+	}
+}
+```
+
+Retrieve data from prefered sensors *(flag)* everytime there is a change in the value with the update interval of 250 ms *(interval)*.
+
+```java
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+	super.onCreate(savedInstanceState);
+	setContentView(R.layout.activity_list);
+
+	addControls();
+	setupToolbar();
+	setupConnectionFactory();
+	importSharedPreferences();
+
+	(publishThread = new Publisher(queue, factory, publisher_name)).start();
+}
+
+private void setupConnectionFactory() {
+	String uri = "CLOUDAMQP_URL";
+	try {
+		factory.setAutomaticRecoveryEnabled(false);
+		factory.setUri(uri);
+	} catch (KeyManagementException | NoSuchAlgorithmException | URISyntaxException e1) {
+		e1.printStackTrace();
+	}
+}
+
+private void publishMessage(Message msg) {
+	//Adds a value to internal blocking queue
+	try {
+		Log.d(TAG, "[q] " + msg);
+		queue.putLast(msg);
+	} catch (InterruptedException e) {
+		e.printStackTrace();
+	}
+}
+```
+
+Setup the connection factory *(setupConnectionFactory)*, start new publisher instance and establish the connection *(onCreate)*, put the message inside the queue queueing for its turn to be published *(publishMessage)*.
+
+```java
+private void sendMessage(String sensorType, String message) {
+	Log.d(sensorType.toUpperCase() + "_SENSOR", message);
+	adapter.add(dateFormat.format(new Date()) + " | " + sensorType + ": " + message);
+
+	if (!client.isConnected()) {
+		publishMessage(new Message(sensorType, message));
+	} else {
+		client.sendMessage(sensorType + '.' + message);
+	}
+}
+```
+
+Switch to sending data directly to AMQP server whenever the Gateway is not available.
+
+#### [ServerInfoActivity.java](/app/src/main/java/com/sonpham/sensors_publishers/ServerInfoActivity.java), the server info
+
+*ServerInfoActivity* is where you configure the information of the host and the port of the Gateway the app will connect to. The system will attempt to reconnect to the server after every modification.
+
+#### [SettingsActivity.java](/app/src/main/java/com/sonpham/sensors_publishers/SettingsActivity.java), your preferences
+
+*SettingsActivity* provides 3 switches to determine what type of sensor data should be collected as well as an input field to configure the publisher name, the tag of the data source. Note that you can collect data from many sensors simultaneously.
+
+#### [Client.java](/app/src/main/java/com/sonpham/sensors_publishers/Client.java), the TCP connection
+
+*Client* provides the definition and the protocol between the device and the Gateway.
+
+```java
+public Client(String host, int port) {
+	this.host = host;
+	this.port = port;
+	online = false;
+	socket = new Socket();
+
+	establishConnection();
+}
+
+private void establishConnection() {
+	connection = new Thread(new Runnable() {
+		@Override
+		public void run() {
+			while (!isConnected() && !Thread.currentThread().isInterrupted()) {
+				try {
+					Log.d(TAG, "Connecting to /" + host + ":" + port + "...");
+					socket = new Socket();
+					socket.connect(new InetSocketAddress(host, port), TIME_OUT);
+					online = true;
+					Log.d(TAG, "Connected to " + socket.getRemoteSocketAddress());
+					out = new DataOutputStream(socket.getOutputStream());
+				} catch (IOException e) {
+					Log.d(TAG, "ERROR: CONNECTION FAILED");
+					online = false;
+				}
+			}
+		}
+	});
+	connection.start();
+}
+
+public void sendMessage(String msg) {
+	Log.d(TAG, "Your message: " + msg);
+
+	try {
+		out.writeUTF(msg);
+	} catch (IOException e) {
+		if (online) {
+			online = false;
+			establishConnection();
+		}
+	}
+}
+```
+
+Establish the connection when a *Client* instance is created (*Client constructor* and *establishConnection*), send messages and when the message cannot be sent try to reconnect to the server *(sendMessage)*.
+
+#### [Publisher.java](/app/src/main/java/com/sonpham/sensors_publishers/Publisher.java), the AMQP connection
+
+*Publisher* has the definition and the protocol between the device and the AMQP server.
+
+```java
+public class Publisher extends Thread {
+	private BlockingDeque<Message> queue;
+    private ConnectionFactory factory;
+    private static final String EXCHANGE_NAME = "amq.topic";
+    public String publisherName;
+	...
+    
+    @Override
+    public void run() {
+        while (true) {
+            try {
+                Connection connection = factory.newConnection();
+                Channel ch = connection.createChannel();
+                ch.confirmSelect();
+
+                while (true) {
+                    Message message = queue.takeFirst();
+                    try {
+                        ch.basicPublish(EXCHANGE_NAME, publisherName + '.' + message.sensorType, null, message.value.getBytes());
+                        Log.d(TAG, "[s] " + message.value);
+                        ch.waitForConfirmsOrDie();
+                    } catch (Exception e) {
+                        Log.d(TAG, "[f] " + message.value);
+                        queue.putFirst(message);
+                        throw e;
+                    }
+                }
+            } catch (InterruptedException e) {
+                break;
+            } catch (Exception e) {
+                Log.d(TAG, "Connection broken: " + e.getClass().getName());
+                try {
+                    Thread.sleep(5000); //sleep and then try again
+                } catch (InterruptedException e1) {
+                    break;
+                }
+            }
+        }
     }
+}
 ```
 
-For example, the following snippet (ArticleDetailFragment.java) binds automatically the view:
+Whenever, *Publisher* instance is created and run *(Thread)*, the thread will get queue data in background and publish them to the AMQP server continuously. We use the *topic* exchange *(amq.topic)* to enable the binding of routing key, a message sent with a particular routing key will be delivered to all the queues that are bound with a matching binding key.
+##### ![topic exchange](https://www.rabbitmq.com/img/tutorials/python-five.png)
+
+#### [Message.java](/app/src/main/java/com/sonpham/sensors_publishers/Message.java), the Message class
+
+The definition of the type Message that will be transfered throughout the system. Includes: type of the sensor and the name of the publisher.
+
 ```java
-    @Bind(R.id.quote)
-    TextView quote;
+public class Message {
+    public String sensorType;
+    public String value;
 
-    @Bind(R.id.author)
-    TextView author;
-
-    @Bind(R.id.backdrop)
-    ImageView backdropImg;
-
-    @Bind(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout collapsingToolbar;
+    public Message(String sensorType, String value) {
+        this.sensorType = sensorType;
+        this.value = value;
+    }
+}
 ```
 
-## About
-My name is <a href="http://www.andreas-schrade.de">Andreas Schrade</a> and I am a freelance software developer with an interest in Android and Java backend development.
+#### [PreferenceUtility.java](/app/src/main/java/com/sonpham/sensors_publishers/PreferenceUtility.java), a helper class
+
+*PreferenceUtility* provides methods for getting and setting the saved preferences.
 
 
+## Usage
 
+In [ListActivity.java](/app/src/main/java/com/sonpham/sensors_publishers/ListActivity.java), change the value of uri value to the URL can be found in the control panel for your instance.
 
-
-
-
- 
-
+```java
+private void setupConnectionFactory() {
+	String uri = "CLOUDAMQP_URL";
+	try {
+		factory.setAutomaticRecoveryEnabled(false);
+		factory.setUri(uri);
+	} catch (KeyManagementException | NoSuchAlgorithmException | URISyntaxException e1) {
+		e1.printStackTrace();
+	}
+}
+```
