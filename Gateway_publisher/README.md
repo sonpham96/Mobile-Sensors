@@ -19,7 +19,7 @@ Every devices that has the Java Virtual Machine (JVM) installed and a decent Int
 ## Brief Implementation
 
 ### Maven
-[/pom.xml](/pom.xml)
+[/Gateway_publisher/pom.xml](/pom.xml)
 
 ```xml
 <dependencies>
@@ -44,9 +44,9 @@ Every devices that has the Java Virtual Machine (JVM) installed and a decent Int
 ```
 
 ### Source code
-[/src/main/java](/src/main/java)
+[/Gateway_publisher/src/main/java](/src/main/java)
 
-#### [Publisher.java](/src/main/java/AMQP/Publisher.java), the AMQP connection
+#### [Publisher.java](/Gateway_publisher/src/main/java/AMQP/Publisher.java), the AMQP connection
 
 *Publisher* has the definition and the protocol between the device and the AMQP server.
 
@@ -98,7 +98,7 @@ public class Publisher extends Thread {
 Whenever, *Publisher* instance is created and run *(Thread)*, the thread will get queue data in background and publish them to the AMQP server continuously. We use the *topic* exchange *(amq.topic)* to enable the binding of routing key, a message sent with a particular routing key will be delivered to all the queues that are bound with a matching binding key.
 ##### ![topic exchange](https://www.rabbitmq.com/img/tutorials/python-five.png)
 
-#### [ClientSocket.java](/src/main/java/Socket/ClientSocket.java), the bridge
+#### [ClientSocket.java](/Gateway_publisher/src/main/java/Socket/ClientSocket.java), the bridge
 
 *Client* provides the definition and the protocol between the clients and the server and also play the role of the bridge between the Gateway and the AMQP server.
 
@@ -154,7 +154,7 @@ class ClientSocket extends Thread {
 * Setup the connection factory *(setupConnectionFactory)*, put the message inside the queue queueing for its turn to be published *(publishMessage)*.
 * Whenever, *ClientSocket* instance is created and run *(Thread)*, the thread will initiate and start *Publisher* instance and then continuously read the messages from clients and publish them to the AMQP server.
 
-#### [Server.java](/src/main/java/Socket/Server.java), the server
+#### [Server.java](/Gateway_publisher/src/main/java/Socket/Server.java), the server
 
 *Server* is where the server resides.
 
@@ -190,7 +190,7 @@ public class Server extends Thread {
 
 When *Server* instance is created and run, it will try to accept the connection request from the client and then start the connection between the two, then it will inititate and start the *ClientSocket* to continuously collect the data from client and forward it to the AMQP server.
 
-#### [Main.java](/src/main/java/Main.java), the executor
+#### [Main.java](/Gateway_publisher/src/main/java/Main.java), the executor
 
 *Main* is where we put everything altogether.
 
@@ -209,7 +209,7 @@ public class Main {
 
 ## Usage
 
-In [ClientSocket.java](/src/main/java/Socket/ClientSocket.java), change the value of uri value to the URL can be found in the control panel for your instance.
+In [ClientSocket.java](/Gateway_publisher/src/main/java/Socket/ClientSocket.java), change the value of uri value to the URL can be found in the control panel for your instance.
 
 ```java
 private void setupConnectionFactory() {
@@ -223,7 +223,7 @@ private void setupConnectionFactory() {
 }
 ```
 
-You can change the publisher name, the tag of the data source, in [Publisher.java](/src/main/java/AMQP/Publisher.java), the default is "GATEWAY".
+You can change the publisher name, the tag of the data source, in [Publisher.java](/Gateway_publisher/src/main/java/AMQP/Publisher.java), the default is "GATEWAY".
 
 ```java
 public class Publisher extends Thread {

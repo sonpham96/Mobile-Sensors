@@ -22,7 +22,7 @@ The app supports every device with a SDK level of at least 14 (Android 4.0+).
 ## Brief Implementation
 
 ### Gradle
-[/app/build.gradle](/app/build.gradle)
+[/Sensors_publisher/app/build.gradle](/app/build.gradle)
 
 ```xml
     compile "com.android.support:appcompat-v7:${android_support_lib_version}"
@@ -34,7 +34,7 @@ The app supports every device with a SDK level of at least 14 (Android 4.0+).
 ```
 
 ### Manifest
-[/app/src/main/AndroidManifest.xml](/app/src/main/AndroidManifest.xml)
+[/Sensors_publisher/app/src/main/AndroidManifest.xml](/app/src/main/AndroidManifest.xml)
 
 ```xml
 > <uses-permission android:name="android.permission.INTERNET" />
@@ -44,12 +44,12 @@ To be able to setup TCP connection and AQMP connection, the app need to request 
 
 
 ### Source code
-[/app/src/main/java/com/sonpham/sensors_publishers](/app/src/main/java/com/sonpham/sensors_publishers)
+[/Sensors_publisher/app/src/main/java/com/sonpham/sensors_publishers](/app/src/main/java/com/sonpham/sensors_publishers)
 
-#### [BaseActivity.java](/app/src/main/java/com/sonpham/sensors_publishers/BaseActivity.java), the base class
+#### [BaseActivity.java](/Sensors_publisher/app/src/main/java/com/sonpham/sensors_publishers/BaseActivity.java), the base class
 *BaseActivity* is the parent class for every *Activity* inside this project. This class creates and provides the navigation drawer and toolbar.
 
-#### [ListActivity.java](/app/src/main/java/com/sonpham/sensors_publishers/ListActivity.java), the main activity
+#### [ListActivity.java](/Sensors_publisher/app/src/main/java/com/sonpham/sensors_publishers/ListActivity.java), the main activity
 
 *ListActivity* can be considered as the main activity, the activity that you will mainly work on.
 
@@ -145,15 +145,15 @@ private void sendMessage(String sensorType, String message) {
 
 Switch to sending data directly to AMQP server whenever the Gateway is not available.
 
-#### [ServerInfoActivity.java](/app/src/main/java/com/sonpham/sensors_publishers/ServerInfoActivity.java), the server info
+#### [ServerInfoActivity.java](/Sensors_publisher/app/src/main/java/com/sonpham/sensors_publishers/ServerInfoActivity.java), the server info
 
 *ServerInfoActivity* is where you configure the information of the host and the port of the Gateway the app will connect to. The system will attempt to reconnect to the server after every modification.
 
-#### [SettingsActivity.java](/app/src/main/java/com/sonpham/sensors_publishers/SettingsActivity.java), your preferences
+#### [SettingsActivity.java](/Sensors_publisher/app/src/main/java/com/sonpham/sensors_publishers/SettingsActivity.java), your preferences
 
 *SettingsActivity* provides 3 switches to determine what type of sensor data should be collected as well as an input field to configure the publisher name, the tag of the data source. Note that you can collect data from many sensors simultaneously.
 
-#### [Client.java](/app/src/main/java/com/sonpham/sensors_publishers/Client.java), the TCP connection
+#### [Client.java](/Sensors_publisher/app/src/main/java/com/sonpham/sensors_publishers/Client.java), the TCP connection
 
 *Client* provides the definition and the protocol between the device and the Gateway.
 
@@ -205,7 +205,7 @@ public void sendMessage(String msg) {
 
 Establish the connection when a *Client* instance is created (*Client constructor* and *establishConnection*), send messages and when the message cannot be sent try to reconnect to the server *(sendMessage)*.
 
-#### [Publisher.java](/app/src/main/java/com/sonpham/sensors_publishers/Publisher.java), the AMQP connection
+#### [Publisher.java](/Sensors_publisher/app/src/main/java/com/sonpham/sensors_publishers/Publisher.java), the AMQP connection
 
 *Publisher* has the definition and the protocol between the device and the AMQP server.
 
@@ -255,7 +255,7 @@ public class Publisher extends Thread {
 Whenever, *Publisher* instance is created and run *(Thread)*, the thread will get queue data in background and publish them to the AMQP server continuously. We use the *topic* exchange *(amq.topic)* to enable the binding of routing key, a message sent with a particular routing key will be delivered to all the queues that are bound with a matching binding key.
 ##### ![topic exchange](https://www.rabbitmq.com/img/tutorials/python-five.png)
 
-#### [Message.java](/app/src/main/java/com/sonpham/sensors_publishers/Message.java), the Message class
+#### [Message.java](/Sensors_publisher/app/src/main/java/com/sonpham/sensors_publishers/Message.java), the Message class
 
 The definition of the type Message that will be transfered throughout the system. Includes: type of the sensor and the name of the publisher.
 
@@ -271,14 +271,14 @@ public class Message {
 }
 ```
 
-#### [PreferenceUtility.java](/app/src/main/java/com/sonpham/sensors_publishers/PreferenceUtility.java), a helper class
+#### [PreferenceUtility.java](/Sensors_publisher/app/src/main/java/com/sonpham/sensors_publishers/PreferenceUtility.java), a helper class
 
 *PreferenceUtility* provides methods for getting and setting the saved preferences.
 
 
 ## Usage
 
-In [ListActivity.java](/app/src/main/java/com/sonpham/sensors_publishers/ListActivity.java), change the value of uri value to the URL can be found in the control panel for your instance.
+In [ListActivity.java](/Sensors_publisher/app/src/main/java/com/sonpham/sensors_publishers/ListActivity.java), change the value of uri value to the URL can be found in the control panel for your instance.
 
 ```java
 private void setupConnectionFactory() {
