@@ -49,6 +49,8 @@ To be able to setup TCP connection and AQMP connection, the app need to request 
 #### [BaseActivity.java](/Sensors_publisher/app/src/main/java/com/sonpham/sensors_publishers/BaseActivity.java), the base class
 *BaseActivity* is the parent class for every *Activity* inside this project. This class creates and provides the navigation drawer and toolbar.
 
+<img src="https://cloud.githubusercontent.com/assets/26101199/24072182/97926ef8-0c15-11e7-813d-14569bc3e966.png" width="400">
+
 #### [ListActivity.java](/Sensors_publisher/app/src/main/java/com/sonpham/sensors_publishers/ListActivity.java), the main activity
 
 *ListActivity* can be considered as the main activity, the activity that you will mainly work on.
@@ -145,9 +147,13 @@ private void sendMessage(String sensorType, String message) {
 
 Switch to sending data directly to AMQP server whenever the Gateway is not available.
 
+<img src="https://cloud.githubusercontent.com/assets/26101199/24072180/9648d4d8-0c15-11e7-8a0d-d2bd35249e4b.png" width="400">
+
 #### [ServerInfoActivity.java](/Sensors_publisher/app/src/main/java/com/sonpham/sensors_publishers/ServerInfoActivity.java), the server info
 
 *ServerInfoActivity* is where you configure the information of the host and the port of the Gateway the app will connect to. The system will attempt to reconnect to the server after every modification.
+
+![setting](https://cloud.githubusercontent.com/assets/26101199/24072239/a4182f0e-0c16-11e7-9bce-c9aeb58182f8.jpg)
 
 #### [SettingsActivity.java](/Sensors_publisher/app/src/main/java/com/sonpham/sensors_publishers/SettingsActivity.java), your preferences
 
