@@ -155,9 +155,9 @@ Switch to sending data directly to AMQP server whenever the Gateway is not avail
 
 #### [SettingsActivity.java](/Sensors_publisher/app/src/main/java/com/sonpham/sensors_publishers/SettingsActivity.java), your preferences
 ![setting](https://cloud.githubusercontent.com/assets/26101199/24072239/a4182f0e-0c16-11e7-9bce-c9aeb58182f8.jpg)
-<img src="https://cloud.githubusercontent.com/assets/26101199/24072182/97926ef8-0c15-11e7-813d-14569bc3e966.png" width="300">
-<img src="https://cloud.githubusercontent.com/assets/26101199/24072182/97926ef8-0c15-11e7-813d-14569bc3e966.png" width="300">
-<img src="https://cloud.githubusercontent.com/assets/26101199/24072182/97926ef8-0c15-11e7-813d-14569bc3e966.png" width="300">
+<img src="https://cloud.githubusercontent.com/assets/26101199/24072182/97926ef8-0c15-11e7-813d-14569bc3e966.png" width="280">
+<img src="https://cloud.githubusercontent.com/assets/26101199/24072182/97926ef8-0c15-11e7-813d-14569bc3e966.png" width="280">
+<img src="https://cloud.githubusercontent.com/assets/26101199/24072182/97926ef8-0c15-11e7-813d-14569bc3e966.png" width="280">
 
 *SettingsActivity* provides 3 switches to determine what type of sensor data should be collected as well as an input field to configure the publisher name, the tag of the data source. Note that you can collect data from many sensors simultaneously.
 
