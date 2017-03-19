@@ -1,4 +1,4 @@
-# Sensors_publisher a.k.a sensorUp
+# Sensors_publisher ![sensorUp](https://lh3.googleusercontent.com/5-15CZICWn_ZjN49yVTfgdzFquey4YC7ZgrXESPzT0HehcBok7Qod1G0CPUxJ9mwZFpX6A38=s30 "ic_launcher.png")
 
 ## What is this?
 
@@ -154,10 +154,12 @@ Switch to sending data directly to AMQP server whenever the Gateway is not avail
 *ServerInfoActivity* is where you configure the information of the host and the port of the Gateway the app will connect to. The system will attempt to reconnect to the server after every modification.
 
 #### [SettingsActivity.java](/Sensors_publisher/app/src/main/java/com/sonpham/sensors_publishers/SettingsActivity.java), your preferences
-![setting](https://cloud.githubusercontent.com/assets/26101199/24072239/a4182f0e-0c16-11e7-9bce-c9aeb58182f8.jpg)
-<img src="https://cloud.githubusercontent.com/assets/26101199/24072182/97926ef8-0c15-11e7-813d-14569bc3e966.png" width="295">
-<img src="https://cloud.githubusercontent.com/assets/26101199/24072182/97926ef8-0c15-11e7-813d-14569bc3e966.png" width="295">
-<img src="https://cloud.githubusercontent.com/assets/26101199/24072182/97926ef8-0c15-11e7-813d-14569bc3e966.png" width="295">
+
+<img src="https://cloud.githubusercontent.com/assets/26101199/24077419/43b77a84-0c7f-11e7-93f7-9586abd25d76.png" width="295">
+
+<img src="https://cloud.githubusercontent.com/assets/26101199/24077417/435fb790-0c7f-11e7-9d18-a39a86452e8d.png" width="295">
+
+<img src="https://cloud.githubusercontent.com/assets/26101199/24077418/438cf69c-0c7f-11e7-9d8a-e23845465920.png" width="295">
 
 *SettingsActivity* provides 3 switches to determine what type of sensor data should be collected as well as an input field to configure the publisher name, the tag of the data source. Note that you can collect data from many sensors simultaneously.
 
